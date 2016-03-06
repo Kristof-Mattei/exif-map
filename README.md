@@ -1,5 +1,7 @@
 Plotting picture locations to a map with D3 and exif data.
 
+![Screenshot Example](/app/images/example.jpg?raw=true "Example")
+
 Bootstrapping the local server
 ```bash
 bower install && npm install

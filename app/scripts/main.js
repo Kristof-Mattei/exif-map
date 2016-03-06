@@ -1,7 +1,70 @@
 (function () {
   'use strict';
-  console.log('bar');
-  var renderChart = function () {
+  var renderUs = function () {
+    var width = 960,
+      height = 500;
+
+    var projection = d3.geo.conicConformal()
+      .rotate([98, 0])
+      .center([0, 38])
+      .parallels([29.5, 45.5])
+      .scale(1000)
+      .translate([width / 2, height / 2])
+      .precision(0.1);
+
+    var path = d3.geo.path()
+      .projection(projection);
+
+    var graticule = d3.geo.graticule()
+      .extent([
+        [-98 - 45, 38 - 45],
+        [-98 + 45, 38 + 45]
+      ])
+      .step([5, 5]);
+
+    var svg = d3.select("body").append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+    svg.append("path")
+      .datum(graticule)
+      .attr("class", "graticule")
+      .attr("d", path);
+
+    d3.json("/data/us.json", function (error, us) {
+      if (error) throw error;
+
+      svg.insert("path", ".graticule")
+        .datum(topojson.feature(us, us.objects.land))
+        .attr("class", "land")
+        .attr("d", path);
+
+      svg.insert("path", ".graticule")
+        .datum(topojson.mesh(us, us.objects.counties, function (a, b) {
+          return a !== b && !(a.id / 1000 ^ b.id / 1000);
+        }))
+        .attr("class", "county-boundary")
+        .attr("d", path);
+
+      svg.insert("path", ".graticule")
+        .datum(topojson.mesh(us, us.objects.states, function (a, b) {
+          return a !== b;
+        }))
+        .attr("class", "state-boundary")
+        .attr("d", path);
+      d3.csv("/data/exif.csv", function (exifData) {
+        svg.selectAll("circles.points")
+          .data(exifData)
+          .enter()
+          .append("circle")
+          .attr("r", 5)
+          .attr("transform", function (d) {
+            return "translate(" + projection([d.lon, d.lat]) + ")";
+          });
+      });
+    });
+  };
+  var renderGlobe = function () {
     var width = 960,
       height = 900;
 
@@ -78,5 +141,6 @@
       });
     });
   };
-  renderChart();
+  renderGlobe();
+  renderUs();
 })();
