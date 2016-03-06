@@ -2,8 +2,10 @@ require 'pry'
 require 'exifr'
 require 'csv'
 
-file = '/Users/heavysixer/Pictures/Photos Library.photoslibrary/Originals/2016/01/06/20160106-154805/BWJT9341.jpg'
-starting_path = '/Users/heavysixer/Pictures/Photos Library.photoslibrary/Originals/2016/'
+binding.pry
+
+throw "no photos environment variable provided. Please use PHOTOS=<some path>" unless ENV['PHOTOS']
+starting_path = ENV['PHOTOS']
 output_path = File.expand_path("#{File.dirname(__FILE__)}/../app/data/exif.csv")
 
 def find_files(path)
@@ -24,6 +26,3 @@ CSV.open(output_path, "wb") do |csv|
     end
   end
 end
-
-
-# data = EXIFR::JPEG.new(file)
