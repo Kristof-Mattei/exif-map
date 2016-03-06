@@ -21,6 +21,11 @@ body {
   stroke-width: .5px;
   stroke-opacity: .5;
 }
+circle {
+  fill: none;
+  stroke: #f00;
+  stroke-width: .5px;
+}
 
 .land {
   fill: transparent;

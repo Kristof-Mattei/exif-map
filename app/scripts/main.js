@@ -9,8 +9,8 @@
       .rotate([20, -90])
       .clipAngle(180 - 1e-3)
       .scale(155)
-      .translate([width / 2, height * .55])
-      .precision(.1);
+      .translate([width / 2, height * 0.55])
+      .precision(0.1);
 
     var path = d3.geo.path()
       .projection(projection);
@@ -49,7 +49,7 @@
       .attr("clip-path", "url(#clip)")
       .attr("d", path);
 
-    d3.json("/scripts/world-110m.json", function (error, world) {
+    d3.json("/data/world-110m.json", function (error, world) {
       if (error) throw error;
 
       svg.insert("path", ".graticule")
@@ -65,6 +65,17 @@
         .attr("class", "boundary")
         .attr("clip-path", "url(#clip)")
         .attr("d", path);
+
+      d3.csv("/data/exif.csv", function (exifData) {
+        svg.selectAll("circles.points")
+          .data(exifData)
+          .enter()
+          .append("circle")
+          .attr("r", 5)
+          .attr("transform", function (d) {
+            return "translate(" + projection([d.lon, d.lat]) + ")";
+          });
+      });
     });
   };
   renderChart();
