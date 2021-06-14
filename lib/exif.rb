@@ -10,7 +10,7 @@ output_path = File.expand_path("#{File.dirname(__FILE__)}/../app/data/exif.csv")
 
 def find_files(path)
   arr = []
-  arr << Dir.glob("#{path}**/*.jpg", File::FNM_CASEFOLD)
+  arr << Dir.glob("#{path}**/*.{jpg,jpeg}", File::FNM_CASEFOLD)
   Dir.glob("#{path}**/*/").each do |p|
     arr << find_files(p)
   end
